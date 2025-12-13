@@ -1,0 +1,37 @@
+services:
+  # Full-stack app (Backend + Frontend)
+  - type: web
+    name: telegram-clone
+    env: node
+    plan: free
+    buildCommand: |
+      npm install
+      npm run build
+      npm run prisma:generate
+      cd frontend
+      npm install
+      npm run build
+      cd ..
+      mkdir -p dist/frontend
+      cp -r frontend/dist/* dist/frontend/
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: telegram-clone-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: PORT
+        value: 10000
+      - key: CORS_ORIGIN
+        value: "*"
+
+# Database
+databases:
+  - name: telegram-clone-db
+    databaseName: telegram_clone
+    user: telegram_user
+    plan: free
