@@ -1,5 +1,5 @@
 import { Router, Response, NextFunction } from 'express'
-import { AuthRequest } from '../middleware/auth.middleware'
+// import { AuthRequest } from '../middleware/auth.middleware'
 import { prisma } from '../database/connection'
 import multer from 'multer'
 import path from 'path'
