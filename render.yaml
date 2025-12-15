@@ -12,26 +12,22 @@ services:
       npm install
       npm run build
       cd ..
-      mkdir -p dist/frontend
-      cp -r frontend/dist/* dist/frontend/
+      node -e "const fs=require('fs'); const path=require('path'); if(!fs.existsSync('dist/frontend')) fs.mkdirSync('dist/frontend', {recursive:true}); const copyDir=(src,dest)=>{const entries=fs.readdirSync(src,{withFileTypes:true}); for(const entry of entries){const srcPath=path.join(src,entry.name); const destPath=path.join(dest,entry.name); if(entry.isDirectory()){fs.mkdirSync(destPath,{recursive:true}); copyDir(srcPath,destPath);}else{fs.copyFileSync(srcPath,destPath);}}}; copyDir('frontend/dist','dist/frontend');"
     startCommand: npm start
     envVars:
       - key: NODE_ENV
         value: production
       - key: DATABASE_URL
-        fromDatabase:
-          name: telegram-clone-db
-          property: connectionString
+        sync: false
       - key: JWT_SECRET
         generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: "7d"
       - key: PORT
         value: 10000
       - key: CORS_ORIGIN
         value: "*"
-
-# Database
-databases:
-  - name: telegram-clone-db
-    databaseName: telegram_clone
-    user: telegram_user
-    plan: free
+      - key: MAX_FILE_SIZE
+        value: "10485760"
+      - key: UPLOAD_DIR
+        value: "./uploads"

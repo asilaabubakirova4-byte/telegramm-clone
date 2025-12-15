@@ -8,7 +8,7 @@
     "build": "tsc",
     "build:backend": "tsc",
     "build:frontend": "cd frontend && npm install && npm run build",
-    "build:full": "npm run build:backend && npm run build:frontend && mkdir -p dist/frontend && cp -r frontend/dist/* dist/frontend/",
+    "build:full": "npm run build:backend && npm run build:frontend && node -e \"const fs=require('fs'); const path=require('path'); if(!fs.existsSync('dist/frontend')) fs.mkdirSync('dist/frontend', {recursive:true}); const copyDir=(src,dest)=>{const entries=fs.readdirSync(src,{withFileTypes:true}); for(const entry of entries){const srcPath=path.join(src,entry.name); const destPath=path.join(dest,entry.name); if(entry.isDirectory()){fs.mkdirSync(destPath,{recursive:true}); copyDir(srcPath,destPath);}else{fs.copyFileSync(srcPath,destPath);}}}; copyDir('frontend/dist','dist/frontend');\"",
     "start": "node dist/index.js",
     "test": "jest",
     "test:watch": "jest --watch",
