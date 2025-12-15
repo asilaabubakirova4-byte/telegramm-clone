@@ -166,14 +166,14 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads')))
 
 // Serve frontend in production
 if (config.nodeEnv === 'production') {
-  app.use(express.static(path.join(__dirname, '../frontend/dist')))
+  app.use(express.static(path.join(__dirname, 'frontend')))
   
   // Handle client-side routing
   app.get('*', (req, res, next) => {
     if (req.path.startsWith('/api/') || req.path.startsWith('/uploads/')) {
       return next()
     }
-    res.sendFile(path.join(__dirname, '../frontend/dist/index.html'))
+    res.sendFile(path.join(__dirname, 'frontend/index.html'))
   })
 }
 
