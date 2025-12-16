@@ -50,7 +50,7 @@ export interface JwtPayload {
 export interface AuthenticatedRequest extends Request {
   user?: UserPublic
   token?: string
-  file?: Express.Multer.File
+  file?: any
 }
 
 export type ChatType = 'direct' | 'group'
