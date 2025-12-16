@@ -164,26 +164,23 @@ app.get('/health', (_, res) => {
 // Static files for uploads
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')))
 
+// API Routes
+app.use('/api/auth', authRoutes)
+app.use('/api/users', userRoutes)
+app.use('/api/chats', authMiddleware, chatRoutes)
+app.use('/api/messages', authMiddleware, messageRoutes)
+
 // Serve frontend in production
 if (config.nodeEnv === 'production') {
   // In production, __dirname will be 'dist' and frontend files are in 'dist/frontend'
   const frontendPath = path.join(__dirname, 'frontend')
   app.use(express.static(frontendPath))
   
-  // Handle client-side routing
-  app.get('*', (req, res, next) => {
-    if (req.path.startsWith('/api/') || req.path.startsWith('/uploads/')) {
-      return next()
-    }
+  // Handle client-side routing - this should be AFTER API routes
+  app.get('*', (req, res) => {
     res.sendFile(path.join(frontendPath, 'index.html'))
   })
 }
-
-// API Routes
-app.use('/api/auth', authRoutes)
-app.use('/api/users', userRoutes)
-app.use('/api/chats', authMiddleware, chatRoutes)
-app.use('/api/messages', authMiddleware, messageRoutes)
 
 // Error handler
 app.use(errorHandler)
