@@ -3,22 +3,22 @@ generator client {
 }
 
 datasource db {
-  provider = "mongodb"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  id           String   @id @default(cuid())
   phone        String   @unique
-  firstName    String   @map("first_name")
-  lastName     String?  @map("last_name")
+  firstName    String
+  lastName     String?
   username     String?  @unique
   bio          String?
-  avatarUrl    String?  @map("avatar_url")
-  onlineStatus String   @default("offline") @map("online_status")
-  lastSeen     DateTime @default(now()) @map("last_seen")
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @updatedAt @map("updated_at")
+  avatarUrl    String?
+  onlineStatus String   @default("offline")
+  lastSeen     DateTime @default(now())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   messages        Message[]
   chatMembers     ChatMember[]
@@ -29,12 +29,12 @@ model User {
 }
 
 model Chat {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  id        String   @id @default(cuid())
   type      String   @default("direct")
   name      String?
-  creatorId String?  @map("creator_id") @db.ObjectId
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  creatorId String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   creator  User?        @relation("ChatCreator", fields: [creatorId], references: [id])
   members  ChatMember[]
@@ -44,12 +44,12 @@ model Chat {
 }
 
 model ChatMember {
-  id                String   @id @default(auto()) @map("_id") @db.ObjectId
-  chatId            String   @map("chat_id") @db.ObjectId
-  userId            String   @map("user_id") @db.ObjectId
+  id                String   @id @default(cuid())
+  chatId            String
+  userId            String
   role              String   @default("member")
-  joinedAt          DateTime @default(now()) @map("joined_at")
-  lastReadMessageId String?  @map("last_read_message_id") @db.ObjectId
+  joinedAt          DateTime @default(now())
+  lastReadMessageId String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   chat Chat @relation(fields: [chatId], references: [id], onDelete: Cascade)
@@ -59,17 +59,17 @@ model ChatMember {
 }
 
 model Message {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
-  chatId       String   @map("chat_id") @db.ObjectId
-  senderId     String   @map("sender_id") @db.ObjectId
+  id           String   @id @default(cuid())
+  chatId       String
+  senderId     String
   content      String
   type         String   @default("text")
-  fileUrl      String?  @map("file_url")
-  thumbnailUrl String?  @map("thumbnail_url")
-  isEdited     Boolean  @default(false) @map("is_edited")
-  isDeleted    Boolean  @default(false) @map("is_deleted")
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @updatedAt @map("updated_at")
+  fileUrl      String?
+  thumbnailUrl String?
+  isEdited     Boolean  @default(false)
+  isDeleted    Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   chat     Chat            @relation(fields: [chatId], references: [id], onDelete: Cascade)
   sender   User            @relation(fields: [senderId], references: [id], onDelete: Cascade)
@@ -79,9 +79,9 @@ model Message {
 }
 
 model MessageStatus {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  messageId String   @map("message_id") @db.ObjectId
-  userId    String   @map("user_id") @db.ObjectId
+  id        String   @id @default(cuid())
+  messageId String
+  userId    String
   status    String   @default("sent")
   timestamp DateTime @default(now())
 
@@ -93,10 +93,10 @@ model MessageStatus {
 }
 
 model BlacklistedToken {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  id        String   @id @default(cuid())
   token     String   @unique
-  expiresAt DateTime @map("expires_at")
-  createdAt DateTime @default(now()) @map("created_at")
+  expiresAt DateTime
+  createdAt DateTime @default(now())
 
   @@map("blacklisted_tokens")
 }
