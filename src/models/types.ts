@@ -51,6 +51,10 @@ export interface AuthenticatedRequest extends Request {
   user?: UserPublic
   token?: string
   file?: any
+  body: any
+  params: any
+  query: any
+  headers: any
 }
 
 export type ChatType = 'direct' | 'group'
